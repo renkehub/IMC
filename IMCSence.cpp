@@ -293,3 +293,8 @@ void IMCSence::thresIMC(int lhs,int rhs)
     computeIMC();
 }
 
+void IMCSence::setMaskOpy(qreal opy)
+{
+    m_maskItem->setoOacity(opy);
+}
+

@@ -34,7 +34,7 @@ void IMCViewer::setCenterImage(const QImage& image)
 
 void IMCViewer::mousePressEvent(QMouseEvent* event)
 {
-    if (imcscene->getState() == PAN || (event->button() == Qt::MiddleButton))
+    if (imcscene->getState() == PAN || (event->buttons() & Qt::MiddleButton) || (event->buttons() & Qt::RightButton))
     {
         togglePan(true, event->pos());
         event->accept();
@@ -48,7 +48,7 @@ void IMCViewer::mousePressEvent(QMouseEvent* event)
 
 void IMCViewer::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (imcscene->getState() == PAN || (event->button() == Qt::MiddleButton))
+    if (imcscene->getState() == PAN || (event->button() & Qt::MiddleButton) || (event->button() & Qt::RightButton))
     {
         togglePan(false, event->pos());
         event->accept();
@@ -62,7 +62,7 @@ void IMCViewer::mouseReleaseEvent(QMouseEvent* event)
 
 void IMCViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    if (imcscene->getState() == PAN || event->buttons() & Qt::MiddleButton)
+    if (imcscene->getState() == PAN || event->buttons() & Qt::MiddleButton || (event->buttons() & Qt::RightButton))
     {
         panTo(event->pos());
         event->accept();
@@ -183,6 +183,7 @@ void IMCViewer::togglePan(bool pan, const QPoint& startPos)
         }
         m_isDarging = true;
         m_dragPrePoint = startPos;
+        m_cursor = cursor();
         setCursor(Qt::ClosedHandCursor);
     }
     else
@@ -202,7 +203,7 @@ void IMCViewer::togglePan(bool pan, const QPoint& startPos)
         }
         m_isDarging = false;
         m_dragPrePoint = QPoint(0, 0);
-        setCursor(Qt::ArrowCursor);
+        setCursor(m_cursor);
     }
 }
 
@@ -250,8 +251,8 @@ void IMCViewer::addBox()
     QRectF senceRect =  mapToScene(viewCenter).boundingRect();
 
     qreal length = qMin(senceRect.width(), senceRect.height()) / 3;
-    QPointF tl = QPointF(senceRect.center().x() - length / 2,senceRect.center().y() - length / 2);
-    QRectF itemRect(tl,QSizeF(length,length));
+    QPointF tl = QPointF(senceRect.center().x() - length / 2, senceRect.center().y() - length / 2);
+    QRectF itemRect(tl, QSizeF(length, length));
     if (imcscene)imcscene->addBox(itemRect);
 }
 
@@ -261,8 +262,8 @@ void IMCViewer::addCircle()
     QRectF senceRect =  mapToScene(viewCenter).boundingRect();
 
     qreal length = qMin(senceRect.width(), senceRect.height()) / 3;
-    QPointF tl = QPointF(senceRect.center().x() - length / 2,senceRect.center().y() - length / 2);
-    QRectF itemRect(tl,QSizeF(length,length));
+    QPointF tl = QPointF(senceRect.center().x() - length / 2, senceRect.center().y() - length / 2);
+    QRectF itemRect(tl, QSizeF(length, length));
     if (imcscene)imcscene->addCircle(itemRect);
 }
 
@@ -284,6 +285,11 @@ void IMCViewer::computeIMC()
 void IMCViewer::thresIMC(int lhs, int rhs)
 {
     imcscene->thresIMC(lhs, rhs);
+}
+
+void  IMCViewer::setMaskOpy(qreal opy)
+{
+    imcscene->setMaskOpy(opy);
 }
 
 

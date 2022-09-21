@@ -5,15 +5,15 @@
 #include <QGraphicsSceneMouseEvent>
 #include "IMCSence.h"
 
-
 CForgegroungImageItem::CForgegroungImageItem(QGraphicsItem* parent):
     QGraphicsObject(parent),
     m_isDrawing(false),
     m_brushColor(Qt::black),
     m_brushSize(2),
-    m_clearSize(10)
+    m_clearSize(10),
+    m_opacity(1.0)
 {
-    QGraphicsEllipseItem ff;
+
 }
 
 
@@ -28,11 +28,27 @@ QImage CForgegroungImageItem::image() const
     return m_image;
 }
 
+void CForgegroungImageItem::updateAlphaChannel(const QImage& alphaImg)
+{
+    unsigned char* buffer = m_PaintImage.bits();
+    const unsigned char* alphaBuffer = alphaImg.constBits();
+    for (int row = 0; row < m_PaintImage.height(); row++)
+    {
+        for (int col = 0; col < m_PaintImage.width(); col++)
+        {
+            buffer[row * m_PaintImage.bytesPerLine() + col * 4 + 3] = alphaBuffer[row * alphaImg.bytesPerLine() + col];
+        }
+    }
+}
+
 void CForgegroungImageItem::setSize(const QSize& sz)
 {
+    m_PaintImage = QImage(sz, QImage::Format_ARGB32);
+    m_PaintImage.fill(m_brushColor);
+
     m_image = QImage(sz, QImage::Format_Alpha8);
-//    m_image = QImage(sz, QImage::Format_ARGB32);
     m_image.fill(Qt::transparent);
+    updateAlphaChannel(m_image);
 }
 
 QRectF CForgegroungImageItem::boundingRect() const
@@ -46,11 +62,12 @@ void CForgegroungImageItem::paint(QPainter* painter, const QStyleOptionGraphicsI
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-    if (m_image.isNull())
+    if (m_PaintImage.isNull())
     {
         return;
     }
-    painter->drawImage(option->exposedRect, m_image, m_image.rect());
+    painter->setOpacity(m_opacity);
+    painter->drawImage(option->exposedRect, m_PaintImage, m_PaintImage.rect());
 }
 
 
@@ -68,11 +85,12 @@ void CForgegroungImageItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
             if (imcScene->getState() == CLEAR_STATE )
             {
 
-                painter.setPen(QPen(m_brushColor, m_clearSize, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
+                painter.setPen(QPen(QColor(255), m_clearSize, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
                 painter.save();
                 painter.setCompositionMode(QPainter::CompositionMode_Clear);
                 painter.drawLine(m_lastPos, event->pos());
                 painter.restore();
+                updateAlphaChannel(m_image);
             }
             else if (imcScene->getState() == PEN_STATE)
             {
@@ -85,8 +103,9 @@ void CForgegroungImageItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 {
                     painter.setClipPath(clipPath);
                 }
-                painter.setPen(QPen(m_brushColor, m_brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                painter.setPen(QPen(QColor(255), m_brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
                 painter.drawPoint(event->pos());
+                updateAlphaChannel(m_image);
             }
             else
             {
@@ -133,11 +152,12 @@ void CForgegroungImageItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
             if (imcScene->getState() == CLEAR_STATE)
             {
-                painter.setPen(QPen(m_brushColor, m_clearSize, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
+                painter.setPen(QPen(QColor(255), m_clearSize, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
                 painter.save();
                 painter.setCompositionMode(QPainter::CompositionMode_Clear);
                 painter.drawLine(m_lastPos, event->pos());
                 painter.restore();
+                updateAlphaChannel(m_image);
             }
             else if (imcScene->getState() == PEN_STATE)
             {
@@ -152,6 +172,7 @@ void CForgegroungImageItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                 }
                 painter.setPen(QPen(m_brushColor, m_brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
                 painter.drawLine(m_lastPos, event->pos());
+                updateAlphaChannel(m_image);
             }
             painter.end();
             m_lastPos = event->pos();
@@ -216,7 +237,7 @@ qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
     return imcPercentage * 100;
 }
 
-void CForgegroungImageItem::updatePath(const QPainterPath& path,const QImage& img)
+void CForgegroungImageItem::updatePath(const QPainterPath& path, const QImage& img)
 {
     IMCSence* imcScene =  dynamic_cast<IMCSence*>(scene());
     if (imcScene)
@@ -228,8 +249,9 @@ void CForgegroungImageItem::updatePath(const QPainterPath& path,const QImage& im
         }
         painter.setPen(Qt::NoPen);
         painter.setCompositionMode(QPainter::CompositionMode_Source);
-        painter.drawImage(path.boundingRect(),img,img.rect());
+        painter.drawImage(path.boundingRect(), img, img.rect());
         painter.end();
+        updateAlphaChannel(m_image);
         update();
     }
 }

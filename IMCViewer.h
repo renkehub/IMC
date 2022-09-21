@@ -26,6 +26,7 @@ public:
     void addCircle();
     void computeIMC();
     void thresIMC(int lhs,int rhs);
+    void setMaskOpy(qreal opy);
 
     QAction * getUndoAct();
 
@@ -58,6 +59,7 @@ private:
 
     bool m_isDarging;
     QPoint m_dragPrePoint;
+    QCursor m_cursor;
 };
 
 

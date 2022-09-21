@@ -21,7 +21,10 @@ public:
     void setBrushColor(const QColor& cr)
     {
         m_brushColor = cr;
+        m_PaintImage.fill(m_brushColor);
+        updateAlphaChannel(m_image);
     }
+    void updateAlphaChannel(const QImage& alphaImg);
 
     void setBrushSize(int sz)
     {
@@ -57,6 +60,12 @@ public:
     void updatePath(const QPainterPath& path,const QImage& img);
 
     void clearBrush();
+    void setoOacity(qreal opy)
+    {
+        m_opacity = opy;
+        update();
+    }
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -65,6 +74,7 @@ protected:
 
 private:
     QImage m_image;
+    QImage m_PaintImage;
     QImage m_oldImage;
     QPointF m_lastPos;
     bool m_isDrawing;
@@ -72,6 +82,7 @@ private:
     QColor m_brushColor;
     int m_brushSize;
     int m_clearSize;
+    qreal m_opacity;
 
 };
 

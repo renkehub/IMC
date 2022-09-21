@@ -59,6 +59,10 @@ MainWindow::MainWindow(QWidget* parent)
             ui->horizontalRangeSlider->setMaximumPosition(val);
         }
     });
+    connect(ui->horizontalOpySlider,&QSlider::valueChanged,[&](int val){
+        qreal opy = val/100.0;
+        ui->graphicsView->setMaskOpy(opy);
+    });
 
     QMenu* editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(ui->graphicsView->getUndoAct());

@@ -47,6 +47,7 @@ public:
     QImage getForgegroundImage();
     void computeIMC();
     void thresIMC(int lhs,int rhs);
+    void setMaskOpy(qreal opy);
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;

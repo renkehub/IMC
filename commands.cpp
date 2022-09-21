@@ -36,7 +36,7 @@ void AddCommand::redo()
 
 
 RemoveCommand::RemoveCommand(IMCSence* scene, QGraphicsItem* item,
-                       QUndoCommand* parent ):
+                             QUndoCommand* parent ):
     QUndoCommand(parent),
     m_sence(scene)
 {
@@ -71,11 +71,13 @@ ImageModefyCommand::ImageModefyCommand(CForgegroungImageItem* item, const QImage
 
 void ImageModefyCommand::undo()
 {
+    m_item->updateAlphaChannel(m_oldImage);
     m_item->setImage(m_oldImage);
 }
 
 void ImageModefyCommand::redo()
 {
+    m_item->updateAlphaChannel(m_curImage);
     m_item->setImage(m_curImage);
 }
 
