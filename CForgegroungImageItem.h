@@ -54,6 +54,7 @@ public:
         m_clearSize = sz;
     }
     qreal getPathIMC(const QPainterPath& path);
+    void updatePath(const QPainterPath& path,const QImage& img);
 
     void clearBrush();
 

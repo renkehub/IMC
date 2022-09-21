@@ -29,6 +29,36 @@ MainWindow::MainWindow(QWidget* parent)
         ui->spinBox_eraser->setValue(val);
         ui->graphicsView->setClearSize(val);
     });
+    ui->horizontalRangeSlider->setValues(0,255);
+    ui->spinBox_lhs->setValue(0);
+    ui->spinBox_rhs->setValue(255);
+    ui->horizontalRangeSlider->setRange(0,255);
+
+    connect(ui->horizontalRangeSlider, &CRangeSlider::valuesChanged, [&](int min, int max)
+    {
+        ui->spinBox_lhs->blockSignals(true);
+        ui->spinBox_rhs->blockSignals(true);
+        ui->spinBox_lhs->setValue(min);
+        ui->spinBox_rhs->setValue(max);
+        ui->spinBox_lhs->blockSignals(false);
+        ui->spinBox_rhs->blockSignals(false);
+        ui->graphicsView->thresIMC(min,max);
+    });
+    connect(ui->spinBox_lhs, QOverload<int>::of(&QSpinBox::valueChanged), [&](int val)
+    {
+        if (val < ui->horizontalRangeSlider->maximumPosition())
+        {
+            ui->horizontalRangeSlider->setMinimumPosition(val);
+        }
+    });
+
+    connect(ui->spinBox_rhs, QOverload<int>::of(&QSpinBox::valueChanged), [&](int val)
+    {
+        if (val > ui->horizontalRangeSlider->minimumPosition())
+        {
+            ui->horizontalRangeSlider->setMaximumPosition(val);
+        }
+    });
 
     QMenu* editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(ui->graphicsView->getUndoAct());

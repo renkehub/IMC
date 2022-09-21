@@ -30,8 +30,8 @@ QImage CForgegroungImageItem::image() const
 
 void CForgegroungImageItem::setSize(const QSize& sz)
 {
-//    m_image = QImage(sz, QImage::Format_Alpha8);
-    m_image = QImage(sz, QImage::Format_ARGB32);
+    m_image = QImage(sz, QImage::Format_Alpha8);
+//    m_image = QImage(sz, QImage::Format_ARGB32);
     m_image.fill(Qt::transparent);
 }
 
@@ -183,8 +183,8 @@ void CForgegroungImageItem::setImage(const QImage& img)
 
 qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
 {
-    QRectF pathBr = path.boundingRect();
-    QImage img(pathBr.size().toSize(), QImage::Format_Grayscale8);
+    QRect pathBr = path.boundingRect().toRect();
+    QImage img(pathBr.size(), QImage::Format_Grayscale8);
     img.fill(128);
     QPainter painter(&img);
     QPainterPath cp = path.translated(pathBr.topLeft() * -1);
@@ -194,7 +194,6 @@ qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
 
     painter.setClipPath(cp);
     painter.drawImage(img.rect(), m_image, pathBr);
-    img.save("mask.png");
     unsigned int num = 0;
     unsigned int imc = 0;
     for (int row = 0; row < img.height(); row++)
@@ -204,15 +203,33 @@ qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
             {
                 continue;
             }
-            else if(img.scanLine(row)[col] == 255){
+            else if (img.scanLine(row)[col] == 255)
+            {
                 imc++;
             }
-            else{
+            else
+            {
                 num++;
             }
     }
-    qDebug()<<"imc"<<imc<<" num"<<num;
-    qreal imcPercentage = 1.0 - num/qreal(imc + num);
-    return imcPercentage*100;
+    qreal imcPercentage = 1.0 - num / qreal(imc + num);
+    return imcPercentage * 100;
 }
 
+void CForgegroungImageItem::updatePath(const QPainterPath& path,const QImage& img)
+{
+    IMCSence* imcScene =  dynamic_cast<IMCSence*>(scene());
+    if (imcScene)
+    {
+        QPainter painter(&m_image);
+        if (!path.isEmpty())
+        {
+            painter.setClipPath(path);
+        }
+        painter.setPen(Qt::NoPen);
+        painter.setCompositionMode(QPainter::CompositionMode_Source);
+        painter.drawImage(path.boundingRect(),img,img.rect());
+        painter.end();
+        update();
+    }
+}

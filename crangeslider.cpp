@@ -743,6 +743,8 @@ void CRangeSlider::mouseMoveEvent(QMouseEvent* mouseEvent)
                        newPosition + d->m_SubclassWidth );
     }
   this->blockSignals(false);
+  emit valuesChanged(d->m_MinimumValue,
+      d->m_MaximumValue);
   mouseEvent->accept();
 }
 

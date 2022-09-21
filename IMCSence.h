@@ -38,14 +38,15 @@ public:
     QColor getBrushColor();
 
     void clearBrush();
-    void addBox();
-    void addCircle();
+    void addBox(const QRectF& boundRect);
+    void addCircle(const QRectF &boundRect);
     void modefyItem(QGraphicsItem* item,const QRectF& rect);
     void modefyItem(QGraphicsItem* item,const QImage& img);
     QUndoStack* getUndoStack();
 //    QGraphicsItem* createItem(DrawType type,QVector<QPointF>& pts);
     QImage getForgegroundImage();
     void computeIMC();
+    void thresIMC(int lhs,int rhs);
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
@@ -58,8 +59,8 @@ signals:
 
 private:
     QGraphicsPixmapItem* m_imageItem;
+    QImage m_centerImage;
     CForgegroungImageItem* m_maskItem;
-    QImage m_oldImage;
     QUndoStack* m_undoStack;
     DrawType m_state;
     QVector<QGraphicsItem*> m_showItems;

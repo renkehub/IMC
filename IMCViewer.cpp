@@ -246,12 +246,24 @@ void IMCViewer::clearBrush()
 
 void IMCViewer::addBox()
 {
-    if (imcscene)imcscene->addBox();
+    QRect viewCenter = viewport()->rect();
+    QRectF senceRect =  mapToScene(viewCenter).boundingRect();
+
+    qreal length = qMin(senceRect.width(), senceRect.height()) / 3;
+    QPointF tl = QPointF(senceRect.center().x() - length / 2,senceRect.center().y() - length / 2);
+    QRectF itemRect(tl,QSizeF(length,length));
+    if (imcscene)imcscene->addBox(itemRect);
 }
 
 void IMCViewer::addCircle()
 {
-    if (imcscene)imcscene->addCircle();
+    QRect viewCenter = viewport()->rect();
+    QRectF senceRect =  mapToScene(viewCenter).boundingRect();
+
+    qreal length = qMin(senceRect.width(), senceRect.height()) / 3;
+    QPointF tl = QPointF(senceRect.center().x() - length / 2,senceRect.center().y() - length / 2);
+    QRectF itemRect(tl,QSizeF(length,length));
+    if (imcscene)imcscene->addCircle(itemRect);
 }
 
 QAction* IMCViewer::getUndoAct()
@@ -267,6 +279,11 @@ QAction* IMCViewer::getRedoAct()
 void IMCViewer::computeIMC()
 {
     imcscene->computeIMC();
+}
+
+void IMCViewer::thresIMC(int lhs, int rhs)
+{
+    imcscene->thresIMC(lhs, rhs);
 }
 
 

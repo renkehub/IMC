@@ -25,6 +25,7 @@ public:
     void addBox();
     void addCircle();
     void computeIMC();
+    void thresIMC(int lhs,int rhs);
 
     QAction * getUndoAct();
 
