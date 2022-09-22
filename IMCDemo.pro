@@ -24,6 +24,7 @@ SOURCES += \
     IMCViewer.cpp \
     commands.cpp \
     crangeslider.cpp \
+    imcwidget.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -35,9 +36,11 @@ HEADERS += \
     IMCViewer.h \
     commands.h \
     crangeslider.h \
+    imcwidget.h \
     mainwindow.h
 
 FORMS += \
+    imcwidget.ui \
     mainwindow.ui
 
 # Default rules for deployment.

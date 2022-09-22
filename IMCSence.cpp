@@ -122,6 +122,7 @@ void IMCSence::clearBrush()
     {
         m_maskItem->clearBrush();
     }
+    computeIMC();
 }
 
 QImage IMCSence::getForgegroundImage()
