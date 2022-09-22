@@ -25,8 +25,7 @@ SOURCES += \
     commands.cpp \
     crangeslider.cpp \
     main.cpp \
-    mainwindow.cpp \
-    operationData.cpp
+    mainwindow.cpp
 
 HEADERS += \
     CForgegroungImageItem.h \
@@ -36,8 +35,7 @@ HEADERS += \
     IMCViewer.h \
     commands.h \
     crangeslider.h \
-    mainwindow.h \
-    operationData.h
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui
