@@ -15,6 +15,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    bool eventFilter(QObject *target, QEvent *event) override;
+
 private slots:
     void on_pushButton_load_clicked();
 

@@ -247,6 +247,7 @@ void CGraphicsCirCleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             this->setRect(rt);
             m_prePt = scenePos;
         }
+        imcScene->computeIMC();
     }
     else
     {

@@ -43,8 +43,8 @@ void IMCSence::setCenterImage(const QPixmap& pixmap)
         m_imageItem->setZValue(20);
         addItem(m_imageItem);
     }
+    m_undoStack->clear();
     m_imageItem->setPixmap(pixmap);
-
     m_maskItem->setSize(pixmap.size());
 
 }
@@ -265,7 +265,7 @@ void IMCSence::computeIMC()
     }
 }
 
-void IMCSence::thresIMC(int lhs,int rhs)
+void IMCSence::thresIMC(int lhs,int rhs,bool isMove)
 {
     for (auto item : m_showItems)
     {
@@ -288,7 +288,7 @@ void IMCSence::thresIMC(int lhs,int rhs)
 
             }
         }
-        m_maskItem->updatePath(item->shape(),alpImage);
+        m_maskItem->updatePath(item->shape(),alpImage,isMove);
     }
     computeIMC();
 }

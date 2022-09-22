@@ -4,14 +4,16 @@
 #include <QtDebug>
 #include <QGraphicsSceneMouseEvent>
 #include "IMCSence.h"
+#include <QElapsedTimer>
 
 CForgegroungImageItem::CForgegroungImageItem(QGraphicsItem* parent):
     QGraphicsObject(parent),
     m_isDrawing(false),
-    m_brushColor(Qt::black),
+    m_brushColor(Qt::green),
     m_brushSize(2),
     m_clearSize(10),
-    m_opacity(1.0)
+    m_opacity(1.0),
+    m_needModefy(false)
 {
 
 }
@@ -32,6 +34,7 @@ void CForgegroungImageItem::updateAlphaChannel(const QImage& alphaImg)
 {
     unsigned char* buffer = m_PaintImage.bits();
     const unsigned char* alphaBuffer = alphaImg.constBits();
+    #pragma omp parallel for num_threads(4)
     for (int row = 0; row < m_PaintImage.height(); row++)
     {
         for (int col = 0; col < m_PaintImage.width(); col++)
@@ -135,6 +138,7 @@ void CForgegroungImageItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         if (imcScene)
         {
             imcScene->modefyItem(this, m_oldImage);
+            imcScene->computeIMC();
         }
         update();
 
@@ -177,6 +181,7 @@ void CForgegroungImageItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             painter.end();
             m_lastPos = event->pos();
             update();
+            imcScene->computeIMC();
         }
     }
     else
@@ -191,7 +196,15 @@ void CForgegroungImageItem::clearBrush()
     if (!m_image.isNull())
     {
         prepareGeometryChange();
+        m_oldImage = m_image;
+        IMCSence* imcScene =  dynamic_cast<IMCSence*>(scene());
+        if (imcScene)
+        {
+            imcScene->modefyItem(this, m_oldImage);
+            imcScene->computeIMC();
+        }
         m_image.fill(Qt::transparent);
+        updateAlphaChannel(m_image);
         update();
     }
 }
@@ -237,11 +250,18 @@ qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
     return imcPercentage * 100;
 }
 
-void CForgegroungImageItem::updatePath(const QPainterPath& path, const QImage& img)
+void CForgegroungImageItem::updatePath(const QPainterPath& path, const QImage& img, bool isMove)
 {
     IMCSence* imcScene =  dynamic_cast<IMCSence*>(scene());
     if (imcScene)
     {
+        if(isMove)
+        {
+            if(!m_needModefy){
+                m_needModefy = true;
+                m_oldImage = m_image;
+            }
+        }
         QPainter painter(&m_image);
         if (!path.isEmpty())
         {
@@ -253,5 +273,11 @@ void CForgegroungImageItem::updatePath(const QPainterPath& path, const QImage& i
         painter.end();
         updateAlphaChannel(m_image);
         update();
+
+        if(!isMove)
+        {
+            m_needModefy = false;
+            imcScene->modefyItem(this,m_oldImage);
+        }
     }
 }

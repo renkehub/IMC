@@ -29,12 +29,12 @@ MainWindow::MainWindow(QWidget* parent)
         ui->spinBox_eraser->setValue(val);
         ui->graphicsView->setClearSize(val);
     });
-    ui->horizontalRangeSlider->setValues(0,255);
+    ui->horizontalRangeSlider->setValues(0, 255);
     ui->spinBox_lhs->setValue(0);
     ui->spinBox_rhs->setValue(255);
-    ui->horizontalRangeSlider->setRange(0,255);
+    ui->horizontalRangeSlider->setRange(0, 255);
 
-    connect(ui->horizontalRangeSlider, &CRangeSlider::valuesChanged, [&](int min, int max)
+    connect(ui->horizontalRangeSlider, &CRangeSlider::valuesChanged, [&](int min, int max, bool isMove)
     {
         ui->spinBox_lhs->blockSignals(true);
         ui->spinBox_rhs->blockSignals(true);
@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget* parent)
         ui->spinBox_rhs->setValue(max);
         ui->spinBox_lhs->blockSignals(false);
         ui->spinBox_rhs->blockSignals(false);
-        ui->graphicsView->thresIMC(min,max);
+        ui->graphicsView->thresIMC(min, max,isMove);
     });
     connect(ui->spinBox_lhs, QOverload<int>::of(&QSpinBox::valueChanged), [&](int val)
     {
@@ -59,10 +59,12 @@ MainWindow::MainWindow(QWidget* parent)
             ui->horizontalRangeSlider->setMaximumPosition(val);
         }
     });
-    connect(ui->horizontalOpySlider,&QSlider::valueChanged,[&](int val){
-        qreal opy = val/100.0;
+    connect(ui->horizontalOpySlider, &QSlider::valueChanged, [&](int val)
+    {
+        qreal opy = val / 100.0;
         ui->graphicsView->setMaskOpy(opy);
     });
+    ui->horizontalOpySlider->setValue(55);
 
     QMenu* editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(ui->graphicsView->getUndoAct());
@@ -76,12 +78,21 @@ MainWindow::MainWindow(QWidget* parent)
     ui->pushButton_pan->setChecked(true);
     ui->graphicsView->setBrushSize(ui->spinBox_brush->value());
     ui->graphicsView->setClearSize(ui->spinBox_eraser->value());
-
+    installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+bool MainWindow::eventFilter(QObject* target, QEvent* event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QApplication::sendEvent(ui->graphicsView, event);
+    }
+    return QMainWindow::eventFilter(target, event);
 }
 
 

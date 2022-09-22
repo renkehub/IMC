@@ -57,7 +57,7 @@ public:
         m_clearSize = sz;
     }
     qreal getPathIMC(const QPainterPath& path);
-    void updatePath(const QPainterPath& path,const QImage& img);
+    void updatePath(const QPainterPath& path,const QImage& img,bool isMove);
 
     void clearBrush();
     void setoOacity(qreal opy)
@@ -78,6 +78,7 @@ private:
     QImage m_oldImage;
     QPointF m_lastPos;
     bool m_isDrawing;
+    bool m_needModefy;
 
     QColor m_brushColor;
     int m_brushSize;

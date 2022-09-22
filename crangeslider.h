@@ -89,7 +89,7 @@ Q_SIGNALS:
   void maximumValueChanged(int max);
   ///
   /// Utility signal that is fired when minimum or maximum values have changed.
-  void valuesChanged(int min, int max);
+  void valuesChanged(int min, int max, bool isMove = false);
 
   ///
   /// This signal is emitted when sliderDown is true and the slider moves.

@@ -46,7 +46,7 @@ public:
 //    QGraphicsItem* createItem(DrawType type,QVector<QPointF>& pts);
     QImage getForgegroundImage();
     void computeIMC();
-    void thresIMC(int lhs,int rhs);
+    void thresIMC(int lhs,int rhs, bool isMove);
     void setMaskOpy(qreal opy);
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

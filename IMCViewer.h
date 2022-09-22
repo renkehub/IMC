@@ -25,7 +25,7 @@ public:
     void addBox();
     void addCircle();
     void computeIMC();
-    void thresIMC(int lhs,int rhs);
+    void thresIMC(int lhs,int rhs, bool isMove);
     void setMaskOpy(qreal opy);
 
     QAction * getUndoAct();

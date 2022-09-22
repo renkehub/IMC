@@ -81,7 +81,7 @@ void IMCViewer::setState(DrawType state)
 
 void IMCViewer::updateCursor()
 {
-    QColor curColor;
+    QColor curColor = imcscene->getBrushColor();
     if (imcscene->getState() == PAN || imcscene->getState() == MODEFY_STATE)
     {
         setCursor(Qt::ArrowCursor);
@@ -282,9 +282,9 @@ void IMCViewer::computeIMC()
     imcscene->computeIMC();
 }
 
-void IMCViewer::thresIMC(int lhs, int rhs)
+void IMCViewer::thresIMC(int lhs, int rhs, bool isMove)
 {
-    imcscene->thresIMC(lhs, rhs);
+    imcscene->thresIMC(lhs, rhs,isMove);
 }
 
 void  IMCViewer::setMaskOpy(qreal opy)
