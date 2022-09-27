@@ -212,7 +212,7 @@ QUndoStack* IMCSence::getUndoStack()
     return m_undoStack;
 }
 
-void IMCSence::addBox(const QRectF &boundRect)
+void IMCSence::addBox(const QRectF& boundRect)
 {
     CGraphicsRectItem* rectItem = new CGraphicsRectItem(boundRect);
     rectItem->setZValue(50);
@@ -221,7 +221,7 @@ void IMCSence::addBox(const QRectF &boundRect)
     m_undoStack->push(addCommand);
 }
 
-void IMCSence::addCircle(const QRectF &boundRect)
+void IMCSence::addCircle(const QRectF& boundRect)
 {
     CGraphicsCirCleItem* circleItem = new CGraphicsCirCleItem(boundRect);
     circleItem->setZValue(50);
@@ -251,44 +251,46 @@ void IMCSence::computeIMC()
     for (auto item : m_showItems)
     {
         qreal imc = m_maskItem->getPathIMC(item->shape());
-        QString showString = QString("IMC: ") +  QString::number(imc,'f',2) + QString("%");
+        QString imcNumString = QString::number(imc, 'f', 2) + QString("%");
         CGraphicsCirCleItem* circleItem = dynamic_cast<CGraphicsCirCleItem*>(item);
         if (circleItem)
         {
-            circleItem->setShowString(showString);
+            circleItem->setShowString(imcNumString);
         }
 
         CGraphicsRectItem* ritem = dynamic_cast<CGraphicsRectItem*>(item);
         if (ritem)
         {
-            ritem->setShowString(showString);
+            ritem->setShowString(imcNumString);
         }
     }
 }
 
-void IMCSence::thresIMC(int lhs,int rhs,bool isMove)
+void IMCSence::thresIMC(int lhs, int rhs, bool isMove)
 {
     for (auto item : m_showItems)
     {
         QRect rect = item->shape().boundingRect().toRect().normalized();
         QImage retImage = m_centerImage.copy(rect).convertToFormat(QImage::Format_Grayscale8);
         unsigned char* buffer = retImage.bits();
-        QImage alpImage(retImage.size(),QImage::Format_Alpha8);
+        QImage alpImage(retImage.size(), QImage::Format_Alpha8);
         unsigned char* albuffer = alpImage.bits();
-        for(int row=0;row<retImage.height();row++)
+        for (int row = 0; row < retImage.height(); row++)
         {
-            for(int col = 0;col<retImage.width();col++)
+            for (int col = 0; col < retImage.width(); col++)
             {
-                unsigned char val = buffer[row*retImage.bytesPerLine() + col];
-                if(val>lhs && val<rhs){
-                   albuffer[row*retImage.bytesPerLine() + col] = 255;
+                unsigned char val = buffer[row * retImage.bytesPerLine() + col];
+                if (val > lhs && val < rhs)
+                {
+                    albuffer[row * retImage.bytesPerLine() + col] = 255;
                 }
-                else{
-                    albuffer[row*retImage.bytesPerLine() + col] = 0;
+                else
+                {
+                    albuffer[row * retImage.bytesPerLine() + col] = 0;
                 }
             }
         }
-        m_maskItem->updatePath(item->shape(),alpImage,isMove);
+        m_maskItem->updatePath(item->shape(), alpImage, isMove);
     }
     computeIMC();
 }
@@ -297,4 +299,23 @@ void IMCSence::setMaskOpy(qreal opy)
 {
     m_maskItem->setoOacity(opy);
 }
+
+void IMCSence::updateCurrentItemName(const QString& name)
+{
+    for (auto item : m_showItems)
+    {
+        CGraphicsCirCleItem* circleItem = dynamic_cast<CGraphicsCirCleItem*>(item);
+        if (circleItem && circleItem->isSelected())
+        {
+            circleItem->setName(name);
+        }
+
+        CGraphicsRectItem* ritem = dynamic_cast<CGraphicsRectItem*>(item);
+        if (ritem && ritem->isSelected())
+        {
+            ritem->setName(name);
+        }
+    }
+}
+
 

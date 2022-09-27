@@ -154,3 +154,12 @@ void IMCWidget::on_pushButton_addBox_clicked()
     ui->pushButton_edit->setChecked(true);
     on_pushButton_edit_clicked();
 }
+
+void IMCWidget::on_pushButton_name_clicked()
+{
+    QString name =  ui->lineEdit_name->text();
+    if (!name.isEmpty())
+    {
+        ui->graphicsView->updateCurrentItemName(name);
+    }
+}

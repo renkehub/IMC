@@ -246,7 +246,7 @@ qreal CForgegroungImageItem::getPathIMC(const QPainterPath& path)
                 num++;
             }
     }
-    qreal imcPercentage = 1.0 - num / qreal(imc + num);
+    qreal imcPercentage = num / qreal(imc + num);
     return imcPercentage * 100;
 }
 

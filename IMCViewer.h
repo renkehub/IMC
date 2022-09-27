@@ -24,6 +24,7 @@ public:
     void clearBrush();
     void addBox();
     void addCircle();
+    void updateCurrentItemName(const QString& name);
     void computeIMC();
     void thresIMC(int lhs,int rhs, bool isMove);
     void setMaskOpy(qreal opy);

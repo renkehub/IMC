@@ -284,12 +284,18 @@ void IMCViewer::computeIMC()
 
 void IMCViewer::thresIMC(int lhs, int rhs, bool isMove)
 {
-    imcscene->thresIMC(lhs, rhs,isMove);
+    imcscene->thresIMC(lhs, rhs, isMove);
 }
 
 void  IMCViewer::setMaskOpy(qreal opy)
 {
     imcscene->setMaskOpy(opy);
+}
+
+void IMCViewer::updateCurrentItemName(const QString& name)
+{
+    imcscene->updateCurrentItemName(name);
+    imcscene->update();
 }
 
 

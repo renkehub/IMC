@@ -36,6 +36,8 @@ private slots:
 
     void on_pushButton_addBox_clicked();
 
+    void on_pushButton_name_clicked();
+
 private:
     Ui::IMCWidget* ui;
 };

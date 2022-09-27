@@ -35,6 +35,10 @@ public:
     }
     QPainterPath shape() const override;
 
+    void setName(const QString& name){
+        m_name = name;
+    }
+
 signals:
     void locChanged(const QRectF& rect);
 
@@ -50,6 +54,7 @@ private:
     QCursor m_preCursor;
     QString m_showStr;
     QRectF m_oldRect; //用于撤销
+    QString m_name = "IMC";
 };
 
 #endif // CGRAPHICSRECTITEM_H

@@ -36,6 +36,11 @@ public:
         m_showStr = str;
         update();
     }
+    void setName(const QString& name){
+        prepareGeometryChange();
+        m_name = name;
+        update();
+    }
     QPainterPath shape() const override;
 
     bool contains(const QPointF& point) const override;
@@ -58,6 +63,7 @@ private:
     QCursor m_preCursor;
     QString m_showStr;
     QRectF m_oldRect; //用于撤销
+    QString m_name = "IMC";
 };
 
 #endif // CGRAPHICSCIRCLEITEM_H

@@ -280,7 +280,8 @@ void CGraphicsCirCleItem::setDrawColor(const QColor& cr)
 QRectF CGraphicsCirCleItem::boundingRect() const
 {
     QFontMetricsF fontMetrics(m_font);
-    QRectF rect2 = fontMetrics.boundingRect(m_showStr).adjusted(-4, -4, 4, 4);
+    QString imcString = m_name + ": " + m_showStr;
+    QRectF rect2 = fontMetrics.boundingRect(imcString).adjusted(-4, -4, 4, 4);
     QRectF itemRect = rect().normalized();
     QRectF textRect = QRectF(rect2.topLeft() / m_lod * 1.5, rect2.bottomRight() / m_lod * 1.5).translated(itemRect.center()).normalized();
     textRect.adjust(0, - rect2.width(), 0, 0);
@@ -424,7 +425,8 @@ void CGraphicsCirCleItem::paint(QPainter* painter, const QStyleOptionGraphicsIte
         textPos.setY(textPos.y() - 4);
 
         QPainterPath textpath;
-        textpath.addText(textPos, m_font, m_showStr);
+        QString imcString = m_name + ": " + m_showStr;
+        textpath.addText(textPos, m_font, imcString);
 //        QFontMetricsF fontMetrics(m_font);
 //        QRectF rect2 = fontMetrics.boundingRect(m_showStr).adjusted(-4, -4, 4, 4);
 //        textpath.translate(rect2.center()*-1);

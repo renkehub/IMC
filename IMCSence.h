@@ -48,6 +48,7 @@ public:
     void computeIMC();
     void thresIMC(int lhs,int rhs, bool isMove);
     void setMaskOpy(qreal opy);
+    void updateCurrentItemName(const QString& name);
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;

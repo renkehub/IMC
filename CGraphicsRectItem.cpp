@@ -20,7 +20,7 @@ CGraphicsRectItem::CGraphicsRectItem(const QRectF& rect, QGraphicsItem* parent):
 {
     setAcceptHoverEvents(true);
     setFlags(ItemIsSelectable);
-    m_font = QFont("Arial");
+    m_font = QFont("微软雅黑");
 //    m_showStr = QObject::tr("Auto Expose Area");
 }
 
@@ -189,7 +189,8 @@ void CGraphicsRectItem::setDrawColor(const QColor& cr)
 QRectF CGraphicsRectItem::boundingRect() const
 {
     QFontMetricsF fontMetrics(m_font);
-    QRectF rect2 = fontMetrics.boundingRect(m_showStr).adjusted(-4, -4, 4, 4);
+    QString imcName = m_name + ": " + m_showStr;
+    QRectF rect2 = fontMetrics.boundingRect(imcName).adjusted(-4, -4, 4, 4);
     QRectF itemRect = rect().normalized();
     QRectF textRect = QRectF(rect2.topLeft() / m_lod * 1.5, rect2.bottomRight() / m_lod * 1.5).translated(itemRect.topLeft()).normalized();
     textRect.adjust(0, - rect2.width(), 0, 0);
@@ -324,7 +325,8 @@ void CGraphicsRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
         textPos.setY(textPos.y() - 4);
 
         QPainterPath textpath;
-        textpath.addText(textPos, m_font, m_showStr);
+        QString imcName = m_name + ": " + m_showStr;
+        textpath.addText(textPos, m_font, imcName);
 
         painter->setPen(Qt::NoPen);
         painter->setBrush(QBrush(QColor(0, 0, 0, 75)));
