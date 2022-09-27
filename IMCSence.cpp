@@ -157,10 +157,12 @@ void IMCSence::keyPressEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_Z && event->modifiers() == Qt::ControlModifier)
     {
         m_undoStack->undo();
+        computeIMC();
     }
     if (event->key() == Qt::Key_Y && event->modifiers() == Qt::ControlModifier)
     {
         m_undoStack->redo();
+        computeIMC();
     }
     if (event->key() == Qt::Key_Space)
     {
@@ -248,7 +250,6 @@ void IMCSence::computeIMC()
 {
     for (auto item : m_showItems)
     {
-
         qreal imc = m_maskItem->getPathIMC(item->shape());
         QString showString = QString("IMC: ") +  QString::number(imc,'f',2) + QString("%");
         CGraphicsCirCleItem* circleItem = dynamic_cast<CGraphicsCirCleItem*>(item);
@@ -262,7 +263,6 @@ void IMCSence::computeIMC()
         {
             ritem->setShowString(showString);
         }
-
     }
 }
 
@@ -286,7 +286,6 @@ void IMCSence::thresIMC(int lhs,int rhs,bool isMove)
                 else{
                     albuffer[row*retImage.bytesPerLine() + col] = 0;
                 }
-
             }
         }
         m_maskItem->updatePath(item->shape(),alpImage,isMove);

@@ -22,21 +22,21 @@
      <item>
       <widget class="QPushButton" name="pushButton_load">
        <property name="text">
-        <string>load</string>
+        <string>加载图像</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_addBox">
        <property name="text">
-        <string>AddBox</string>
+        <string>添加矩形</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_addCircle">
        <property name="text">
-        <string>AddCircle</string>
+        <string>添加圆形</string>
        </property>
       </widget>
      </item>
@@ -46,28 +46,28 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>color</string>
+        <string>画笔颜色</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_clear">
        <property name="text">
-        <string>clear</string>
+        <string>清除</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_compute">
        <property name="text">
-        <string>compute</string>
+        <string>计算</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_pan">
        <property name="text">
-        <string>pan</string>
+        <string>浏览模式</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -83,7 +83,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_edit">
        <property name="text">
-        <string>edit</string>
+        <string>编辑模式</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -96,7 +96,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_pen">
        <property name="text">
-        <string>pen</string>
+        <string>画笔</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -109,7 +109,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_eraser">
        <property name="text">
-        <string>eraser</string>
+        <string>橡皮</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
