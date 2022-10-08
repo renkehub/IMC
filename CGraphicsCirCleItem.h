@@ -64,6 +64,7 @@ private:
     QString m_showStr;
     QRectF m_oldRect; //用于撤销
     QString m_name = "IMC";
+    QRectF m_textRect;
 };
 
 #endif // CGRAPHICSCIRCLEITEM_H

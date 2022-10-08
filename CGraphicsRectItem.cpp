@@ -21,7 +21,7 @@ CGraphicsRectItem::CGraphicsRectItem(const QRectF& rect, QGraphicsItem* parent):
     setAcceptHoverEvents(true);
     setFlags(ItemIsSelectable);
     m_font = QFont("微软雅黑");
-//    m_showStr = QObject::tr("Auto Expose Area");
+    m_showStr = "0.00%";
 }
 
 CGraphicsRectItem::~CGraphicsRectItem()
@@ -157,7 +157,7 @@ void CGraphicsRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             this->setRect(rt);
             m_prePt = scenePos;
         }
-        imcScene->computeIMC();
+//        imcScene->computeIMC();
     }
     else
     {
@@ -175,8 +175,10 @@ void CGraphicsRectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         emit locChanged(norRect);
         this->setRect(norRect);
         IMCSence* imcScene =  dynamic_cast<IMCSence*>(scene());
-        if(imcScene){
-            imcScene->modefyItem(this,m_oldRect);
+        if (imcScene)
+        {
+            imcScene->modefyItem(this, m_oldRect);
+            imcScene->computeIMC();
         }
     }
 }
@@ -188,12 +190,15 @@ void CGraphicsRectItem::setDrawColor(const QColor& cr)
 
 QRectF CGraphicsRectItem::boundingRect() const
 {
-    QFontMetricsF fontMetrics(m_font);
-    QString imcName = m_name + ": " + m_showStr;
-    QRectF rect2 = fontMetrics.boundingRect(imcName).adjusted(-4, -4, 4, 4);
+//    QFontMetricsF fontMetrics(m_font);
+//    QString imcName = m_name + ": " + m_showStr;
+//    QRectF rect2 = fontMetrics.boundingRect(imcName).adjusted(-4, -4, 4, 4);
+
+    QRectF textRect = m_textRect.normalized();
+    textRect.adjust(-4, -4, 4, 4);
+    textRect = QRectF(textRect.topLeft() / m_lod * 1.5, textRect.bottomRight() / m_lod * 1.5);
+
     QRectF itemRect = rect().normalized();
-    QRectF textRect = QRectF(rect2.topLeft() / m_lod * 1.5, rect2.bottomRight() / m_lod * 1.5).translated(itemRect.topLeft()).normalized();
-    textRect.adjust(0, - rect2.width(), 0, 0);
     QRectF boundRect = itemRect.adjusted(-m_contralSize / m_lod, -m_contralSize / m_lod, m_contralSize / m_lod, m_contralSize / m_lod);
     return  textRect.united(boundRect).normalized();
 }
@@ -295,7 +300,7 @@ void CGraphicsRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
     painter->setPen(QPen(QBrush(m_color), m_penWidth / m_lod, Qt::DotLine));
     painter->drawRect(rect);
 
-    if(isSelected())
+    if (isSelected())
     {
         QPointF delta(m_contralSize / m_lod, m_contralSize / m_lod);
 
@@ -316,7 +321,7 @@ void CGraphicsRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
         painter->drawRects(rects);
     }
 
-    if(!m_showStr.isEmpty())
+    if (!m_showStr.isEmpty())
     {
         painter->save();
         double scaleValue = 1.5 / m_lod;
@@ -326,7 +331,18 @@ void CGraphicsRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
 
         QPainterPath textpath;
         QString imcName = m_name + ": " + m_showStr;
+        QFontMetricsF fontMetrics(m_font);
+        qreal hei = fontMetrics.boundingRect(imcName).height();
+
+
         textpath.addText(textPos, m_font, imcName);
+        textPos.setY(textPos.y() - hei);
+        QString widStr = tr("width: ") + QString::number(this->rect().width(), 'f', 3) + "pix";
+        textpath.addText(textPos, m_font, widStr);
+        QString heiStr = tr("height: ") + QString::number(this->rect().height(), 'f', 3) + "pix";
+        textPos.setY(textPos.y() - hei);
+        textpath.addText(textPos, m_font, heiStr);
+        m_textRect = textpath.boundingRect();
 
         painter->setPen(Qt::NoPen);
         painter->setBrush(QBrush(QColor(0, 0, 0, 75)));

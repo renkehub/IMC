@@ -23,7 +23,7 @@ CGraphicsCirCleItem::CGraphicsCirCleItem(const QRectF& rect, bool isCircle, QGra
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
     m_font = QFont("Arial");
-//    m_showStr = QObject::tr("Auto Expose Area");
+    m_showStr = "0.00%";
 }
 
 CGraphicsCirCleItem::~CGraphicsCirCleItem()
@@ -247,7 +247,6 @@ void CGraphicsCirCleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             this->setRect(rt);
             m_prePt = scenePos;
         }
-        imcScene->computeIMC();
     }
     else
     {
@@ -268,6 +267,7 @@ void CGraphicsCirCleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         if (imcScene)
         {
             imcScene->modefyItem(this, m_oldRect);
+            imcScene->computeIMC();
         }
     }
 }
@@ -279,12 +279,11 @@ void CGraphicsCirCleItem::setDrawColor(const QColor& cr)
 
 QRectF CGraphicsCirCleItem::boundingRect() const
 {
-    QFontMetricsF fontMetrics(m_font);
-    QString imcString = m_name + ": " + m_showStr;
-    QRectF rect2 = fontMetrics.boundingRect(imcString).adjusted(-4, -4, 4, 4);
+    QRectF textRect = m_textRect.normalized();
+    textRect.adjust(-4, -4, 4, 4);
+    textRect = QRectF(textRect.topLeft() / m_lod * 1.5, textRect.bottomRight() / m_lod * 1.5);
+
     QRectF itemRect = rect().normalized();
-    QRectF textRect = QRectF(rect2.topLeft() / m_lod * 1.5, rect2.bottomRight() / m_lod * 1.5).translated(itemRect.center()).normalized();
-    textRect.adjust(0, - rect2.width(), 0, 0);
     QRectF boundRect = itemRect.adjusted(-m_contralSize / m_lod, -m_contralSize / m_lod, m_contralSize / m_lod, m_contralSize / m_lod);
     return  textRect.united(boundRect).normalized();
 }
@@ -386,11 +385,7 @@ void CGraphicsCirCleItem::paint(QPainter* painter, const QStyleOptionGraphicsIte
     circle.addEllipse(rect);
     painter->setPen(QPen(QBrush(m_color), m_penWidth / m_lod, Qt::DotLine));
     painter->drawPath(circle);
-
     QPointF delta(m_contralSize / m_lod, m_contralSize / m_lod);
-
-
-
     if (isSelected())
     {
         painter->setPen(QPen(QBrush(Qt::black), m_penWidth / m_lod, Qt::SolidLine));
@@ -427,9 +422,26 @@ void CGraphicsCirCleItem::paint(QPainter* painter, const QStyleOptionGraphicsIte
         QPainterPath textpath;
         QString imcString = m_name + ": " + m_showStr;
         textpath.addText(textPos, m_font, imcString);
-//        QFontMetricsF fontMetrics(m_font);
-//        QRectF rect2 = fontMetrics.boundingRect(m_showStr).adjusted(-4, -4, 4, 4);
-//        textpath.translate(rect2.center()*-1);
+        QFontMetricsF fontMetrics(m_font);
+        qreal hei = fontMetrics.boundingRect(imcString).height();
+
+        if(m_isCircle)
+        {
+            textPos.setY(textPos.y() - hei);
+            QString DiaStr = tr("Diameter: ") + QString::number(this->rect().width(), 'f', 3) + "pix";
+            textpath.addText(textPos, m_font, DiaStr);
+        }
+        else{
+            textPos.setY(textPos.y() - hei);
+            QString lAxis = tr("Long Axis: ") + QString::number(this->rect().width(), 'f', 3) + "pix";
+            textpath.addText(textPos, m_font, lAxis);
+
+            textPos.setY(textPos.y() - hei);
+            QString sAxis = tr("Short Axis: ") + QString::number(this->rect().height(), 'f', 3) + "pix";
+            textpath.addText(textPos, m_font, sAxis);
+        }
+
+        m_textRect = textpath.boundingRect();
 
         painter->setPen(Qt::NoPen);
         painter->setBrush(QBrush(QColor(0, 0, 0, 75)));
