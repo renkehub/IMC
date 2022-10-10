@@ -8,6 +8,7 @@
 #include <QDebug>
 #include "CGraphicsRectItem.h"
 #include "CGraphicsCirCleItem.h"
+#include <QGraphicsView>
 
 IMCSence::IMCSence(QObject* parent):
     QGraphicsScene(parent),
@@ -175,6 +176,7 @@ void IMCSence::keyPressEvent(QKeyEvent* event)
             if (item->isSelected())
             {
                 m_undoStack->push(new RemoveCommand(this, item));
+                views()[0]->setCursor(Qt::ArrowCursor);
             }
         }
     }

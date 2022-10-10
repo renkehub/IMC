@@ -48,7 +48,8 @@ RemoveCommand::RemoveCommand(IMCSence* scene, QGraphicsItem* item,
 void RemoveCommand::undo()
 {
     m_sence->addBoundItem(m_item);
-    m_sence->addItem(m_item);
+    m_item->setVisible(true);
+//    m_sence->addItem(m_item);
 //    m_sence->clearSelection();
     m_sence->update();
 }
@@ -56,7 +57,9 @@ void RemoveCommand::undo()
 void RemoveCommand::redo()
 {
     m_sence->removeBoundItem(m_item);
-    m_sence->removeItem(m_item);
+//    m_sence->removeItem(m_item);
+    m_item->setVisible(false);
+    m_item->update();
     m_sence->update();
 }
 

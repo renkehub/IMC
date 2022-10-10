@@ -66,6 +66,18 @@ IMCWidget::IMCWidget(QWidget* parent) :
         ui->horizontalOpySlider->setValue(val * 100);
     });
 
+    connect(ui->graphicsView, &IMCViewer::valChanged, [&](int type, int val)
+    {
+        if (type == PEN_STATE)
+        {
+            ui->spinBox_brush->setValue(ui->spinBox_brush->value() + val);
+        }
+        else if (type == CLEAR_STATE)
+        {
+            ui->spinBox_eraser->setValue(ui->spinBox_eraser->value() + val);
+        }
+    });
+
     ui->horizontalOpySlider->setValue(55);
     QButtonGroup* box = new QButtonGroup(this);
     box->addButton(ui->pushButton_pan);

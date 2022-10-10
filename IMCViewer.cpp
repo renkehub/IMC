@@ -132,6 +132,13 @@ void IMCViewer::onSceneRectChanged(const QRectF& rect)
 
 void IMCViewer::wheelEvent(QWheelEvent* event)
 {
+    int wheelDelta = event->delta();
+    if(event->modifiers() == Qt::ControlModifier)
+    {
+        int valStep = event->angleDelta().y() / 8 / 15;
+        emit valChanged(imcscene->getState(),valStep);
+        return;
+    }
     QPointF curPos = event->pos();
     QPointF scenePos = this->mapToScene(curPos.toPoint());
     qreal viewWidth = this->viewport()->width();
@@ -140,7 +147,7 @@ void IMCViewer::wheelEvent(QWheelEvent* event)
     qreal hScale = curPos.x() / viewWidth;
     qreal vScale = curPos.y() / viewHeight;
 
-    int wheelDelta = event->delta();
+
 
     qreal scaleVal = transform().m11();
     if (wheelDelta > 0)

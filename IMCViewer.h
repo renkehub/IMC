@@ -51,6 +51,10 @@ private:
     void togglePan(bool pan,const QPoint& startPos);
     void panTo(const QPoint& pos);
 
+signals:
+    void valChanged(int type,int val);
+
+
 public slots:
     void onSceneRectChanged(const QRectF&rect);
 
